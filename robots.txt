@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /bf-quote.html
+
+Sitemap: https://bfglobalsolutions.nl/sitemap.xml
