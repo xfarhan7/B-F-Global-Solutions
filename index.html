@@ -72,7 +72,8 @@ h1,h2,h3,h4{font-family:'Inter',sans-serif;font-weight:500;letter-spacing:-.022e
 .lbl{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.7rem;letter-spacing:.26em;text-transform:uppercase;color:var(--accent-2)}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 2rem}
 section{position:relative;padding:5rem 0}
-#company{padding-top:2.5rem}
+#company{padding-top:5rem}
+@media(max-width:960px){#company{padding-top:3.6rem}}
 
 /* ===== CUSTOM CURSOR ===== */
 @media(hover:hover) and (pointer:fine){
@@ -183,7 +184,7 @@ header.on{background:rgba(5,5,5,.94);backdrop-filter:blur(16px);border-bottom-co
 
 /* ===== PRODUCTS ===== */
 .prod{border-top:1px solid var(--rule)}
-.prow{display:grid;grid-template-columns:4.5rem 1fr 1.5fr;gap:2.5rem;align-items:baseline;padding:2.6rem 0;
+.prow{display:grid;grid-template-columns:4.5rem 1fr 1.5fr;gap:2.5rem;align-items:start;padding:2.6rem 0;
   border-bottom:1px solid var(--rule);transition:.4s;position:relative}
 .prow::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--laser);
   box-shadow:0 0 14px var(--laser-glow),0 0 34px rgba(34,200,255,.30);
@@ -191,8 +192,9 @@ header.on{background:rgba(5,5,5,.94);backdrop-filter:blur(16px);border-bottom-co
 .prow:focus-within::before,.prow.lit::before{transform:scaleY(1)}
 .prow:hover::before{transform:scaleY(1)}
 .prow:hover{padding-left:1.6rem}
-.prow .k{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.16em;color:var(--graphite-2)}
-.prow h3{font-size:1.5rem;margin-bottom:.5rem}
+.prow .k{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.16em;color:var(--graphite-2);padding-top:.55rem}
+.prow h3{font-size:1.5rem;margin-bottom:.5rem;line-height:1.2}
+.prow>p{padding-top:.35rem}
 .prow .tags{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1rem}
 .prow .tags span{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
   color:var(--graphite);border:1px solid var(--rule-2);padding:.28rem .55rem}
@@ -227,7 +229,8 @@ header.on{background:rgba(5,5,5,.94);backdrop-filter:blur(16px);border-bottom-co
 /* ===== ASSURANCE ===== */
 
 /* ===== CONTACT ===== */
-.ct{display:block}
+.ct{display:block;margin-bottom:3rem}
+.ct .lbl{display:block;margin-bottom:1.4rem}
 .ct h2{font-size:clamp(1.75rem,3.4vw,2.5rem)}
 .ct h2 i{font-style:normal;color:var(--accent)}
 .ct .sub{color:var(--bone-dim);margin-top:1.5rem;max-width:52ch}
@@ -904,7 +907,6 @@ body.menu-lock{overflow:hidden;position:fixed;width:100%}
     <div class="ct rv">
       <div>
         <span class="lbl">Get in touch</span>
-        <div style="height:1.4rem"></div>
         <h2>Tell us what you need, <i>and where.</i></h2>
         <p class="sub">Category, volume and destination is enough to begin.</p>
       </div>
