@@ -173,11 +173,19 @@ header.on{background:rgba(5,5,5,.94);backdrop-filter:blur(16px);border-bottom-co
 .rv{opacity:0;transform:translateY(20px);transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
 .rv.in{opacity:1;transform:none}
 
+/* Snap silver divider lines to the device pixel grid so 1px borders render
+   crisp and level. For reveal-animated (.rv) containers we only snap once the
+/* Snap only OUTER section containers to the pixel grid. Never inner elements
+   whose borders must align with a parent border (that caused the box dividers
+   to snap to a different pixel than the box edge). */
+.prod.in,.mapwrap{
+  transform:translateZ(0);backface-visibility:hidden}
 /* ===== WHAT WE DO ===== */
-.do{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule)}
-.do>div{padding:2.6rem 2.2rem;border-right:1px solid var(--rule)}
-.do>div:first-child{padding-left:0}
-.do>div:last-child{border-right:none;padding-right:0}
+/* card-based \u2014 no dividing lines, floating rounded cards + gaps (matches coffee/form) */
+.do{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.do>div{padding:clamp(1.8rem,2.6vw,2.4rem);background:var(--ink-2);border-radius:18px;
+  transition:background .35s,transform .35s}
+.do>div:hover{background:var(--ink-3);transform:translateY(-3px)}
 .do .k{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.2em;color:var(--accent-2);margin-bottom:1.5rem}
 .do h3{font-size:1.5rem;margin-bottom:.7rem}
 .do p{color:var(--bone-dim);font-size:1rem}
@@ -203,15 +211,17 @@ header.on{background:rgba(5,5,5,.94);backdrop-filter:blur(16px);border-bottom-co
   color:#FFFFFF;background:var(--accent);padding:.22rem .45rem;margin-left:.8rem;vertical-align:middle;display:inline-block}
 
 /* ===== COFFEE ===== */
-.coffee{border:1px solid var(--rule);display:block}
-.coffee-l{padding:var(--pad);border-bottom:1px solid var(--rule)}
+/* card-based layout — no dividing lines, just floating rounded cards + gaps */
+.coffee{display:flex;flex-direction:column;gap:1.4rem}
+.coffee-l{position:relative;overflow:hidden;padding:clamp(1.8rem,3vw,2.8rem);
+  background:var(--ink-2);border-radius:18px}
 .coffee-l h3{font-size:clamp(1.7rem,3.2vw,2.3rem);margin:1.2rem 0 1rem}
 .coffee-l p{color:var(--bone-dim);font-size:1rem;max-width:62ch}
 .coffee-l p+p{margin-top:1.1rem}
-.coffee-r{display:grid;grid-template-columns:1fr 1fr}
-.crow{padding:var(--pad);border-right:1px solid var(--rule);transition:.35s}
-.crow:last-child{border-right:none}
-.crow:hover{background:var(--surface,var(--ink-2))}
+.coffee-r{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+.crow{padding:clamp(1.8rem,3vw,2.8rem);background:var(--ink-2);border-radius:18px;
+  transition:background .35s,transform .35s}
+.crow:hover{background:var(--ink-3);transform:translateY(-3px)}
 .crow .k{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.18em;color:var(--accent-2);margin-bottom:.7rem}
 .crow h4{font-size:1.5rem;margin-bottom:.5rem;color:var(--accent)}
 .crow p{color:var(--bone-dim);font-size:1rem}
@@ -240,20 +250,25 @@ header.on{background:rgba(5,5,5,.94);backdrop-filter:blur(16px);border-bottom-co
 .ctdl .v{font-size:1rem}
 .ctdl .v a{color:var(--accent)}
 .ctdl .v a:hover{color:var(--link-hover)}
-.frm{display:grid;grid-template-columns:1fr 1fr;gap:2.2rem 2.4rem;margin-top:3rem;
-  border-top:1px solid var(--rule);padding-top:2.4rem;align-items:start}
+.frm{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem 1.6rem;margin-top:3rem;
+  padding-top:0;align-items:start}
 .frm .f{margin-bottom:0}
 .frm .f:nth-of-type(3){grid-column:1/-1}
 .frm .f:nth-of-type(6){grid-column:1/-1}
 .frm .submit{grid-column:1/-1;justify-self:start}
 .frm .fnote{grid-column:1/-1}
-.frm label{display:block;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--graphite-2);margin-bottom:.6rem}
-.frm input,.frm select,.frm textarea{width:100%;background:none;border:none;border-bottom:1px solid var(--rule);
-  color:var(--bone);font-family:'Inter',sans-serif;font-weight:400;font-size:1rem;padding:.6rem 0;transition:.3s}
-.frm input:focus,.frm select:focus,.frm textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.frm label{display:block;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--graphite-2);margin-bottom:.55rem}
+.frm input,.frm select,.frm textarea{width:100%;background:var(--ink-2);
+  border:1px solid transparent;border-radius:12px;
+  color:var(--bone);font-family:'Inter',sans-serif;font-weight:400;font-size:1rem;
+  padding:.95rem 1.1rem;transition:background .3s,border-color .3s}
+.frm input::placeholder,.frm textarea::placeholder{color:var(--graphite-2)}
+.frm input:hover,.frm select:hover,.frm textarea:hover{background:var(--ink-3)}
+.frm input:focus,.frm select:focus,.frm textarea:focus{outline:none;background:var(--ink-3);
+  border-color:var(--laser)}
 .frm select option{background:var(--ink-2)}
-.frm textarea{resize:vertical;min-height:80px}
+.frm textarea{resize:vertical;min-height:120px}
 .submit{margin-top:2rem;background:var(--accent);border:1px solid var(--accent);color:#050505;font-family:'JetBrains Mono',monospace;
   font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;padding:1rem 2.4rem;transition:.3s}
 .submit:hover{background:var(--accent-soft);border-color:var(--accent-soft);color:#050505}
@@ -338,14 +353,13 @@ footer{border-top:1px solid var(--rule);padding:3.4rem 0 2rem}
   .menu{display:none !important}
   .burger{display:block;z-index:160}
   .do{grid-template-columns:1fr}
-  .do>div,.do>div+div{border-right:none;border-bottom:1px solid var(--rule);padding:2rem 0}
+  .do>div{padding:1.6rem}
   .prow{grid-template-columns:1fr;gap:.8rem}
   .prow .k{order:-1}
   .coffee{grid-template-columns:1fr}
   :root{--pad:1.6rem}
   .coffee-r{grid-template-columns:1fr}
-  .crow{border-right:none;border-bottom:1px solid var(--rule)}
-  .crow:last-child{border-bottom:none}
+  .crow{border:none}
   .frm{grid-template-columns:1fr;gap:0;margin-top:2.2rem;padding-top:2rem}
   .frm .submit{width:100%;justify-self:stretch}
   .ft{grid-template-columns:1fr 1fr;gap:2.4rem}
@@ -814,7 +828,7 @@ body.menu-lock{overflow:hidden;position:fixed;width:100%}
         <span class="k">01</span>
         <div>
           <h3>Coffee<span class="badge">Specialism</span></h3>
-          <div class="tags"><span>Capsules</span><span>Beans</span><span>Roast &amp; ground</span><span>Instant</span><span>Pods</span></div>
+          <div class="tags"><span>Capsules</span><span>Beans</span><span>Roast &amp; ground</span><span>Instant</span></div>
           <a class="wa-cta" href="https://wa.me/31615272396?text=Hi%20B%26F%20Global%20Solutions%2C%20I%20would%20like%20to%20enquire%20about%20Coffee%20%28Nespresso%20Original%20Line%20and%20Vertuo%20Line%29%0A%0ADestination%20market%3A%20%0AVolume%3A%20%0A%0A%28ref%3A%20web-coffee%29" target="_blank" rel="noopener" aria-label="Enquire on WhatsApp about Coffee (Nespresso Original Line and Vertuo Line"><span class="wa-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.4L3.5 20.5l1.4-4.3A8.5 8.5 0 1 1 20.5 11.7z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5.6 0 1-.5 1-1l-1.4-.8-1 .9a5 5 0 0 1-2.2-2.2l.9-1L11 9.5c-.5 0-1 .4-1 1z" fill="currentColor" stroke="none"/></svg></span><span>Enquire on WhatsApp</span></a>
         </div>
         <p>Our deepest category. Capsules, whole bean, roast and ground and instant, led by genuine Nespresso Original Line and Vertuo Line.</p>
@@ -823,7 +837,7 @@ body.menu-lock{overflow:hidden;position:fixed;width:100%}
         <span class="k">02</span>
         <div>
           <h3>Confectionery &amp; Snacks</h3>
-          <div class="tags"><span>Chocolate</span><span>Biscuits</span><span>Sweets</span><span>Crisps</span><span>Nuts</span></div>
+          <div class="tags"><span>Chocolate</span><span>Biscuits</span><span>Sweets</span><span>Crisps</span></div>
         </div>
         <p>Chocolate, biscuits and savoury snacking. The impulse lines that move fastest off shelf.</p>
       </div>
@@ -831,7 +845,7 @@ body.menu-lock{overflow:hidden;position:fixed;width:100%}
         <span class="k">03</span>
         <div>
           <h3>Beverages</h3>
-          <div class="tags"><span>Soft drinks</span><span>Energy</span><span>Juice</span><span>Water</span><span>Tea</span><span>Mixers</span></div>
+          <div class="tags"><span>Soft drinks</span><span>Energy</span><span>Juice</span><span>Water</span></div>
         </div>
         <p>Soft drinks, energy, juices, waters and mixers. High rotation with steady international demand.</p>
       </div>
@@ -839,7 +853,7 @@ body.menu-lock{overflow:hidden;position:fixed;width:100%}
         <span class="k">04</span>
         <div>
           <h3>Personal Care</h3>
-          <div class="tags"><span>Haircare</span><span>Skincare</span><span>Oral care</span><span>Shaving</span><span>Fragrance</span></div>
+          <div class="tags"><span>Haircare</span><span>Skincare</span><span>Oral care</span><span>Fragrance</span></div>
         </div>
         <p>Haircare, skincare, oral care and fragrance from established brands. The category where we check hardest.</p>
       </div>
@@ -847,7 +861,7 @@ body.menu-lock{overflow:hidden;position:fixed;width:100%}
         <span class="k">05</span>
         <div>
           <h3>Household &amp; Cleaning</h3>
-          <div class="tags"><span>Laundry</span><span>Dishwashing</span><span>Surface care</span><span>Paper</span><span>Air care</span></div>
+          <div class="tags"><span>Laundry</span><span>Dishwashing</span><span>Surface care</span><span>Paper</span></div>
         </div>
         <p>Laundry, dishwashing, surface care and paper goods. Dependable volume in every market we serve.</p>
       </div>
@@ -855,7 +869,7 @@ body.menu-lock{overflow:hidden;position:fixed;width:100%}
         <span class="k">06</span>
         <div>
           <h3>Food &amp; Grocery</h3>
-          <div class="tags"><span>Spreads</span><span>Cereals</span><span>Sauces</span><span>Ambient</span><span>Infant</span></div>
+          <div class="tags"><span>Spreads</span><span>Cereals</span><span>Sauces</span><span>Ambient</span></div>
         </div>
         <p>Ambient grocery, spreads, cereals and sauces, with shelf life confirmed on every lot.</p>
       </div>
@@ -888,13 +902,13 @@ body.menu-lock{overflow:hidden;position:fixed;width:100%}
           <div class="k">System 01</div>
           <h4>Original Line</h4>
           <p>Classic espresso and lungo. High rotation and the broadest everyday range we carry.</p>
-          <div class="spec"><span>Ristretto</span><span>Espresso</span><span>Lungo</span><span>Decaffeinato</span><span>Limited editions</span></div>
+          <div class="spec"><span>Ristretto</span><span>Espresso</span><span>Lungo</span><span>Decaffeinato</span></div>
         </div>
         <div class="crow">
           <div class="k">System 02</div>
           <h4>Vertuo Line</h4>
           <p>Centrifusion cups from espresso through to alto. Ranges differ by region, so correct sourcing is essential.</p>
-          <div class="spec"><span>Espresso</span><span>Double</span><span>Gran Lungo</span><span>Mug</span><span>Alto</span></div>
+          <div class="spec"><span>Espresso</span><span>Double</span><span>Gran Lungo</span><span>Alto</span></div>
         </div>
       </div>
     </div>
