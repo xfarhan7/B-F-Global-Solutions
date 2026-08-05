@@ -121,7 +121,8 @@ section{position:relative;padding:5rem 0}
 /* ===== NAV ===== */
 #prog{position:fixed;top:0;left:0;height:1px;background:var(--laser);box-shadow:0 0 10px var(--laser-glow);width:0;z-index:200}
 header{position:fixed;top:0;left:0;right:0;z-index:150;transition:.4s;border-bottom:1px solid transparent}
-header:has(.menu.open){z-index:950}
+header:has(.menu.open){z-index:9991}
+body.menu-lock #hd{z-index:9991}
 header.on{background:rgba(5,5,5,.94);backdrop-filter:blur(16px);border-bottom-color:var(--rule)}
 .nav{max-width:var(--max);margin:0 auto;padding:1.4rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:2rem}
 .brand{display:flex;align-items:baseline;gap:.7rem}
@@ -330,16 +331,8 @@ footer{border-top:1px solid var(--rule);padding:3.4rem 0 2rem}
   section{padding:3.6rem 0}
   .wrap{padding:0 1.4rem}
   .nav{padding:1.2rem 1.4rem}
-  .menu{position:fixed;inset:0;z-index:155;background:#050505;
-    flex-direction:column;justify-content:center;
-    align-items:flex-start;padding:2rem 1.6rem;gap:1.5rem;transform:translateY(-100%);
-    transition:transform .5s cubic-bezier(.2,.8,.2,1);
-    opacity:0;visibility:hidden;pointer-events:none;overflow-y:auto;
-    -webkit-transform:translateY(-100%);will-change:transform}
-  .menu.open{transform:translateY(0) translateZ(0);-webkit-transform:translateY(0) translateZ(0);
-    opacity:1;visibility:visible;pointer-events:auto;isolation:isolate}
-  .menu a{font-family:'Inter',sans-serif;font-size:2rem;text-transform:none;letter-spacing:0;color:var(--accent)}
-  .menu .kbd{display:none}
+  /* inline header menu hidden on mobile — body-level #mobileMenu overlay handles it */
+  .menu{display:none !important}
   .burger{display:block;z-index:160}
   .do{grid-template-columns:1fr}
   .do>div,.do>div+div{border-right:none;border-bottom:1px solid var(--rule);padding:2rem 0}
@@ -680,6 +673,23 @@ body.ck-open #botBtn,body.ck-open #bot,body.ck-open #bot.open{transform:translat
   stroke-linecap:round;stroke-linejoin:round;
   filter:drop-shadow(0 0 6px rgba(34,200,255,.45));transition:stroke .3s}
 .topbar:hover .tb-emoji svg{stroke:#7EDCFF}
+
+/* ===== BULLETPROOF MOBILE MENU OVERLAY (body-level, nothing can bleed through) ===== */
+#mobileMenu{position:fixed;inset:0;width:100%;height:100%;height:100dvh;
+  background:#050505;z-index:9990;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  padding:2rem 1.8rem;gap:.6rem;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transform:translateY(-12px);
+  transition:opacity .32s ease,transform .32s ease,visibility .32s}
+#mobileMenu.open{opacity:1;visibility:visible;pointer-events:auto;transform:none}
+#mobileMenu .mobileMenu-nav{display:flex;flex-direction:column;gap:.2rem;width:100%}
+#mobileMenu a{font-family:'Inter',sans-serif;font-size:2.1rem;font-weight:500;
+  color:#F5F7FA;text-decoration:none;padding:.7rem 0;letter-spacing:-.01em;
+  border-bottom:1px solid rgba(231,235,241,.08);transition:color .2s,padding-left .25s}
+#mobileMenu a:active,#mobileMenu a:hover{color:var(--laser);padding-left:.5rem}
+body.menu-lock{overflow:hidden;position:fixed;width:100%}
+@media(min-width:961px){#mobileMenu{display:none !important}}
 </style>
 </head>
 <body class="lock">
@@ -724,6 +734,15 @@ body.ck-open #botBtn,body.ck-open #bot,body.ck-open #bot.open{transform:translat
     <button class="burger" id="bg" aria-label="Menu"><i></i><i></i></button>
   </div>
 </header>
+<div id="mobileMenu" aria-hidden="true">
+  <nav class="mobileMenu-nav">
+    <a href="#company">Company</a>
+    <a href="#products">Products</a>
+    <a href="#coffee">Coffee</a>
+    <a href="bf-catalogue.html" target="_blank" rel="noopener">Catalogue</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</div>
 
 <main id="top">
 
@@ -1326,11 +1345,24 @@ const hd=document.getElementById('hd'),menu=document.getElementById('menu'),bg=d
 addEventListener('scroll',()=>{hd.classList.toggle('on',scrollY>50);
   const h=document.documentElement.scrollHeight-innerHeight;
   document.getElementById('prog').style.width=(h>0?scrollY/h*100:0)+'%';});
-bg.onclick=()=>{var o=menu.classList.toggle('open');bg.classList.toggle('x');
-  document.getElementById('hd').style.zIndex=o?'950':'';
-  document.body.style.overflow=o?'hidden':'';};
-function cm(){menu.classList.remove('open');bg.classList.remove('x');
-  document.getElementById('hd').style.zIndex='';document.body.style.overflow='';}
+const mobileMenu=document.getElementById('mobileMenu');
+bg.onclick=()=>{
+  var willOpen=!mobileMenu.classList.contains('open');
+  mobileMenu.classList.toggle('open',willOpen);
+  menu.classList.toggle('open',willOpen);   // keep desktop menu in sync (harmless, hidden on mobile)
+  bg.classList.toggle('x',willOpen);
+  mobileMenu.setAttribute('aria-hidden',willOpen?'false':'true');
+  document.body.classList.toggle('menu-lock',willOpen);
+};
+function cm(){
+  mobileMenu.classList.remove('open');
+  menu.classList.remove('open');
+  bg.classList.remove('x');
+  mobileMenu.setAttribute('aria-hidden','true');
+  document.body.classList.remove('menu-lock');
+}
+// close overlay when any of its links is tapped
+mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',cm); });
 document.getElementById('yr').textContent=new Date().getFullYear();
 heroField();
 watchHeadings();
